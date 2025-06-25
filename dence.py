@@ -9,17 +9,19 @@ class Dense:
         self.activation_prime = activation_prime
         self.input = None
         self.z = None
-
+        self.dw = np.zeros_like(self.weights)
+        self.db = np.zeros_like(self.bias)
     def forward(self, input_data):
         self.input = input_data
-        self.z = np.dot(self.input, self.weights) + self.bias
+        self.z = np.dot(self.input, self.weights) + self.bias        
         return self.activation(self.z)
+    
 
     def backward(self, output_error, learning_rate):
         dz = self.activation_prime(self.z) * output_error
-        dw = np.dot(self.input.T, dz)
-        db = np.sum(dz, axis=0, keepdims=True)
+        self.dw = 1 / 80  * np.dot(self.input.T, dz) 
+        self.db = 1 / 80 * np.sum(dz, axis=0, keepdims=True) 
 
-        self.weights -= learning_rate * dw
-        self.bias -= learning_rate * db
+        self.weights -= learning_rate * self.dw
+        self.bias -= learning_rate * self.db
         return np.dot(dz, self.weights.T)
