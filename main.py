@@ -1,10 +1,11 @@
 import pandas as pd
 from utils import scale, train_test_split, accuracy
-from dence import Dense
+from dense import Dense
 from sequential_model import Sequential
 from sklearn.datasets import load_iris
 from activations import *
 import matplotlib
+from optimizers import Adam,SGD
 
 iris = load_iris()
 df = pd.DataFrame(data=iris.data, columns=iris.feature_names)
@@ -28,12 +29,12 @@ layers = [
     Dense(input_size=10, num_neurons=10, activation=ReLU, activation_prime=ReLU_prime),
     Dense(input_size=10, num_neurons=1, activation=sigmoid, activation_prime=sigmoid_prime)
 ]
-model = Sequential(layers)
-model.fit(X_train, y_train, epochs=200, learning_rate=1)
+model = Sequential(layers,optimizer=Adam(learning_rate=0.1))
+model.fit(X_train, y_train, epochs=200, batch_size=32)
 print(X_train.shape, y_train.shape, X_test.shape, y_test.shape)
 predictions = model.predict(X_test)
-print(predictions[5:])  # Print first 5 predictions
-print(y_test[5:])  # Print first 5 true labels
+# print(predictions[5:])  
+# print(y_test[5:]) 
 
 predictions = (predictions > 0.5).astype(int)
 
